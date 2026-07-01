@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ofis qahramonlari testi! 📉📈</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ofis hayotiga oid uchib yuruvchi kulgili ikonkar */
+        .office-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 26px;
+            animation: float 6s linear infinite;
+            bottom: -50px;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(9, 132, 227, 0.2);
+            text-align: center;
+            position: relative;
+            width: 340px;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(116, 185, 255, 0.5);
+            z-index: 10;
+        }
+
+        h2 {
+            color: #2d3436;
+            margin-bottom: 30px;
+            font-size: 20px;
+            line-height: 1.5;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: relative;
+            height: 60px;
+        }
+
+        button {
+            padding: 12px 22px;
+            font-size: 15px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #noBtn {
+            background-color: #b2bec3;
+            color: #2d3436;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+<body>
+
+<div class="box" id="mainBox">
+    <h2 id="question">1-Savol: Bugun charchadingiz, rahbar ko'rmay turganda sekingina ishdan vaqtliroq qochib ketsakmikin? 🏃‍♂️🤫</h2>
+    <div class="btn-container" id="btnContainer">
+        <button id="yesBtn" onclick="yesBtnClicked(event)" onmouseover="flyAwayYes(event)" ontouchstart="flyAwayYes(event)">Ketdik, men tayyor! 🚗</button>
+        <button id="noBtn" onclick="noBtnClicked(event)" onmouseover="flyAwayNo(event)" ontouchstart="flyAwayNo(event)">Yo'q, 18:00 gacha o'tiraman 🥺</button>
+    </div>
+</div>
+
+<script>
+    // Kulgili ikonkalarni chiqarish
+    const icons = ['🏃‍♂️', '☕', '💻', '🍛', '😴', '💰', '📉'];
+    function createIcon() {
+        const icon = document.createElement('div');
+        icon.classList.add('office-icon');
+        icon.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+        icon.style.left = Math.random() * 100 + 'vw';
+        icon.style.animationDuration = Math.random() * 4 + 4 + 's';
+        icon.style.fontSize = Math.random() * 20 + 15 + 'px';
+        document.body.appendChild(icon);
+        setTimeout(() => { icon.remove(); }, 6000);
+    }
+    setInterval(createIcon, 400);
+
+    // Xazilli ofis savollari ro'yxati
+    const questions = [
+        { q: "1-Savol: Bugun charchadingiz, rahbar ko'rmay turganda sekingina ishdan vaqtliroq qochib ketsakmikin? 🏃‍♂️🤫", yes: "Ketdik, men tayyor! 🚗", no: "Yo'q, 18:00 gacha o'tiraman 🥺" },
+        { q: "2-Savol: Monitorga qarab juda jiddiy ishlayotgandek o'tiribsiz, lekin xayolda juma kungi osh rejalashtirilyaptimi? 🍛🤤", yes: "Go'shti ko'p bo'lsin! 🥩", no: "Faqat birja shartnomasi 📈" },
+        { q: "3-Savol: 'Bugun tizimlar qotib qoldi, hamma uyiga ketsin va oyliklar ikki barobar oshdi' deyishsa ishonasizmi? 🤩💸", yes: "Uraaa, ishondim! 🎉", no: "Yana tush ko'ryapman 🛌" },
+        { q: "4-Savol: Xaridlar va shartnomalar olamidagi har qanday muammoni 'yopvoradigan' eng zo'r xodim kim? 🏆📲", yes: "Men-da o'sha! 😎", no: "Boshqalar..." }
+    ];
+
+    let currentStep = 0;
+
+    function resetButtons() {
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        
+        yesBtn.style.position = 'static';
+        yesBtn.style.transform = 'none';
+        noBtn.style.position = 'static';
+        noBtn.style.transform = 'none';
+    }
+
+    function nextQuestion() {
+        currentStep++;
+        resetButtons();
+
+        const qText = document.getElementById('question');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+
+        qText.innerText = questions[currentStep].q;
+        yesBtn.innerText = questions[currentStep].yes;
+        noBtn.innerText = questions[currentStep].no;
+    }
+
+    function yesBtnClicked(event) {
+        if (currentStep < 3) {
+            event.preventDefault();
+            flyAwayYes(event);
+        } else {
+            showFinalMessage();
+        }
+    }
+
+    function noBtnClicked(event) {
+        if (currentStep === 3) {
+            event.preventDefault();
+            flyAwayNo(event);
+        } else {
+            nextQuestion();
+        }
+    }
+
+    function flyAwayYes(event) {
+        if (currentStep < 3) {
+            if (event) event.preventDefault(); 
+            const yesBtn = document.getElementById('yesBtn');
+            boxInsideMove(yesBtn);
+        }
+    }
+
+    function flyAwayNo(event) {
+        if (currentStep === 3) {
+            if (event) event.preventDefault(); 
+            const noBtn = document.getElementById('noBtn');
+            boxInsideMove(noBtn);
+        }
+    }
+
+    // Tugmani faqat oq quti ichida silliq qochirish
+    function boxInsideMove(element) {
+        const container = document.getElementById('btnContainer');
+        
+        const maxX = container.clientWidth - element.offsetWidth;
+        const maxY = container.clientHeight - element.offsetHeight;
+        
+        const randomX = Math.floor(Math.random() * maxX);
+        const randomY = Math.floor(Math.random() * (maxY + 10)) - 5; 
+        
+        element.style.position = 'absolute';
+        element.style.left = randomX + 'px';
+        element.style.top = randomY + 'px';
+    }
+
+    function showFinalMessage() {
+        const box = document.getElementById('mainBox');
+        box.innerHTML = `
+            <h2 style="color: #0984e3;">Ofisimiz faxri va qahramoni! 🏆🔥</h2>
+            <p style="font-size: 16px; color: #2d3436; font-weight: 500; line-height: 1.6; text-align: justify;">
+                Sizni tabriklaymiz! Siz nafaqat XT-XARID tizimini, balki jamoamizning kayfiyatini ham ushlab turgan eng professional xodimsiz! <br><br>
+                Ishdan vaqtli ketishga qo'ymagan bo'lsak ham, yuzingizga ozgina bo'lsa-da tabassum yurgan bo'lsa, biz maqsadimizga erishdik. Ishingizga rivoj, charchamay yuqori kayfiyatda ishlashda davom eting! 💪🚀
+            </p>
+        `;
+    }
+</script>
+
+</body>
+</html>
